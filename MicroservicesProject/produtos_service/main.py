@@ -14,6 +14,17 @@ class Produto(BaseModel):
 # Dicionário para armazenar os produtos
 products = {}
 
+@app.get("/products/{codigo}", response_model=Produto)
+async def get_product_by_codigo(codigo: int):
+    """Busca um produto pelo código"""
+    produto = products.get(codigo)
+    if produto:
+        return produto
+    else:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+
+
+
 # Criação de um produto
 @app.post("/products/")
 def create_product(produto: Produto):

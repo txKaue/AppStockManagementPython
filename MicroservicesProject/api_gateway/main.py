@@ -16,6 +16,21 @@ class Produto(BaseModel):
     quantidade: int
     preco: float
 
+
+@app.get("/products/{codigo}")
+async def get_product(codigo: int):
+    """Busca um produto pelo código no microsserviço de Produtos"""
+    async with httpx.AsyncClient() as client:
+        response = await client.get(f"{BASE_URL_PRODUTOS}/products/{codigo}")
+
+    # Verificar se o produto foi encontrado
+    if response.status_code == 200:
+        return response.json()  # Retorna o produto encontrado
+    elif response.status_code == 404:
+        raise HTTPException(status_code=404, detail="Produto não encontrado")
+    else:
+        raise HTTPException(status_code=response.status_code, detail="Erro ao buscar produto")
+
 # Rotas de Produtos
 @app.post("/products/")
 async def create_product(produto: Produto):
@@ -71,9 +86,3 @@ async def list_produtos():
         response = await client.get(f"{BASE_URL_ESTOQUE}/estoque/list_produtos/")
         return response.json()
 
-@app.get("/estoque/buscar_produto/{codigo}")
-async def buscar_produto(codigo: int):
-    """Busca um produto no estoque pelo código"""
-    async with httpx.AsyncClient() as client:
-        response = await client.get(f"{BASE_URL_ESTOQUE}/estoque/buscar_produto/{codigo}")
-        return response.json()

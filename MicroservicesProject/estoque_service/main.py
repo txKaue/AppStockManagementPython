@@ -5,7 +5,7 @@ import httpx
 app = FastAPI()
 
 # URL do serviço de produtos
-BASE_URL_PRODUTOS = "http://127.0.0.1:8001/products/"
+BASE_URL_PRODUTOS = "http://127.0.0.1:8000/products/"
 
 # Lista para armazenar os produtos no estoque (somente códigos)
 estoque = []
